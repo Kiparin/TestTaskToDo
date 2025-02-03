@@ -16,11 +16,16 @@ namespace DataBase.Helper
             }
             if (createData != null)
             {
-                stringBuilder.AppendLine($"Created = {((DateTime)createData).Ticks} AND ");
+                long startTicks = ((DateTime)createData).Date.Ticks; // Начало дня
+                long endTicks = ((DateTime)createData).Date.AddDays(1).Ticks - 1; // Конец дня
+                stringBuilder.AppendLine($"Created BETWEEN {startTicks} AND {endTicks} AND ");
             }
             if (deadLine != null)
             {
-                stringBuilder.AppendLine($"DeadLine = {((DateTime)deadLine).Ticks} AND ");
+                // Приводим даты к 00:00
+                long startTicks = ((DateTime)deadLine).Date.Ticks; // Начало дня
+                long endTicks = ((DateTime)deadLine).Date.AddDays(1).Ticks - 1; // Конец дня
+                stringBuilder.AppendLine($"DeadLine BETWEEN {startTicks} AND {endTicks} AND ");
             }
             var result = stringBuilder.ToString().Replace("\n", "").Replace("\r", "");
 

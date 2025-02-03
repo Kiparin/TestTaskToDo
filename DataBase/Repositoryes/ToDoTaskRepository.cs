@@ -16,7 +16,8 @@ namespace DataBase.Repositoryes
 
         public async Task<int> CreateItemAsync(ToDoTask item)
         {
-            return await database.InsertAsync(item);
+            await database.InsertAsync(item);
+            return item.Id;
         }
 
         public async Task<ToDoTask> GetItemAsync(int id)
