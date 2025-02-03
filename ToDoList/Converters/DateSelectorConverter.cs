@@ -7,6 +7,8 @@ namespace ToDoList.Converters
 {
     public class DateSelectorConverter : IValueConverter
     {
+        //Конвертирует дату согласно Культуре и выбирает между датой создания и датой обновления 
+        //Если дата обновления болье - берем ее ( задача после создания была в редактировании ) 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is ToDoDtoModel data)
