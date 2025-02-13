@@ -10,14 +10,15 @@ namespace DataBase.Units
     /// Принимает модели приложения конвертирует в свой слой
     /// Оверинжиниринг с прицелом на расширение
     /// </summary>
-    public class ToDoUnit : IUnitOfWork<ToDoDtoModel>
+    public class ToDoUnit : IBaseDataService, IUnitOfWork<ToDoDtoModel>
     {
         private ToDoTaskRepository _dataBase;
 
-        public ToDoUnit(string dataBasePath)
+        public ToDoUnit() 
         {
-            _dataBase = new ToDoTaskRepository(dataBasePath);
+            _dataBase = new ToDoTaskRepository(dataPath);
         }
+
 
         /// <summary>
         /// Создает объекта в базе данных

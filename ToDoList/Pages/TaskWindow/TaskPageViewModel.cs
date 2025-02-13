@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-using DataBase;
+using DataBase.Interfaces;
 
 using MVVMLight.Messaging;
 
@@ -28,12 +28,13 @@ namespace ToDoList.Pages.TaskWindow
 
         //обработчик кнопок в зависимости от Mode
         public ICommand FirstButtonCommandAsync { get; set; }
-
         public NotifyProperty<string> FirstButtonText { get; set; } = new NotifyProperty<string>("");
         public NotifyProperty<Visibility> FirstButtonVisible { get; set; } = new NotifyProperty<Visibility>(Visibility.Visible);
+
         public ICommand SecondButtonCommandAsync { get; set; }
         public NotifyProperty<string> SecondButtonText { get; set; } = new NotifyProperty<string>("");
         public NotifyProperty<Visibility> SecondButtonVisible { get; set; } = new NotifyProperty<Visibility>(Visibility.Visible);
+
         public ICommand EditCommandAsync { get; set; }
 
         //закрытие окна
@@ -41,9 +42,9 @@ namespace ToDoList.Pages.TaskWindow
 
         private ToDoDtoModel _toDoDtoModel;
         private ToDoAction _mode;
-        private DataBaseService _dataBase;
+        private IUnitOfWork<ToDoDtoModel> _dataBase;
 
-        public TaskPageViewModel(DataBaseService dataBaseService)
+        public TaskPageViewModel(IUnitOfWork<ToDoDtoModel> dataBaseService)
         {
             _dataBase = dataBaseService;
             FirstButtonCommandAsync = new AsyncRelayCommand(FirstButtonCommandAsyncAction);
@@ -108,11 +109,11 @@ namespace ToDoList.Pages.TaskWindow
                     UpdateModel();
                     if (_mode == ToDoAction.Create)
                     {
-                        _toDoDtoModel.Id = await _dataBase.ToDoTask.CreateAsync(_toDoDtoModel);
+                        _toDoDtoModel.Id = await _dataBase.CreateAsync(_toDoDtoModel);
                     }
                     else
                     {
-                        await _dataBase.ToDoTask.UpdateAsync(_toDoDtoModel);
+                        await _dataBase.UpdateAsync(_toDoDtoModel);
                     }
                     Messenger.Default.Send<ToDoItemResponseMessage>(new ToDoItemResponseMessage(_toDoDtoModel));
                     Cancel?.Invoke(this);

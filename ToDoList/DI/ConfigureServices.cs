@@ -1,8 +1,12 @@
 ﻿using Api;
 
 using DataBase;
+using DataBase.Interfaces;
+using DataBase.Units;
 
 using Microsoft.Extensions.DependencyInjection;
+
+using SharedModel.DTO;
 
 namespace DocumentTranslator.DependencyInjection
 {
@@ -14,8 +18,8 @@ namespace DocumentTranslator.DependencyInjection
         /// <param name="services"></param>
         internal static void Configure(ServiceCollection services)
         {
-            services.AddTransient<TaskApiService>();
-            services.AddTransient<DataBaseService>();
+            services.AddTransient<ITaskApiService, TaskApiService>();
+            services.AddTransient<IUnitOfWork<ToDoDtoModel>, ToDoUnit>();
         }
     }
 }

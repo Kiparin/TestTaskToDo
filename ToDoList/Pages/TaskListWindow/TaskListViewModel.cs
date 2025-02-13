@@ -8,6 +8,7 @@ using Api;
 
 using DataBase;
 using DataBase.Helper;
+using DataBase.Interfaces;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -54,11 +55,11 @@ namespace ToDoList.Pages.TaskListWindow
         public ICommand FindCommandAsync { get; set; }
 
         //Инджекшены
-        private DataBaseService _dataBaseService;
+        private IUnitOfWork<ToDoDtoModel> _dataBaseService;
 
-        private TaskApiService _apiService;
+        private ITaskApiService _apiService;
 
-        public TaskListViewModel(DataBaseService dataBaseService, TaskApiService apiService)
+        public TaskListViewModel(IUnitOfWork<ToDoDtoModel> dataBaseService, ITaskApiService apiService)
         {
             _dataBaseService = dataBaseService;
             _apiService = apiService;
@@ -93,7 +94,7 @@ namespace ToDoList.Pages.TaskListWindow
                       DateCreateFind.Value ? DateCreate.Value : null,
                       DeadLineFind.Value ? DeadLine.Value : null
                     );
-                var result = await _dataBaseService.ToDoTask.GetFromQuery(query);
+                var result = await _dataBaseService.GetFromQuery(query);
                 ToDoCollection.UpdateFromList(result);
                 await UpdateCount();
             }
@@ -146,7 +147,7 @@ namespace ToDoList.Pages.TaskListWindow
 
                 foreach (var item in missingElements)
                 {
-                    await _dataBaseService.ToDoTask.CreateAsync(item);
+                    await _dataBaseService.CreateAsync(item);
                     Console.WriteLine(item.Description);
                 }
 
@@ -160,7 +161,7 @@ namespace ToDoList.Pages.TaskListWindow
             if (arg != null && arg is ToDoDtoModel todoItem)
             {
                 ToDoCollection.Remove(todoItem);
-                await _dataBaseService.ToDoTask.DeleteAsync(todoItem.Id);
+                await _dataBaseService.DeleteAsync(todoItem.Id);
                 await UpdateCount();
             }
         }
@@ -216,7 +217,7 @@ namespace ToDoList.Pages.TaskListWindow
         //Получение всех задач из базы  ( в нашем случае только получение тасок )
         private async Task GetToDoFomDataBase()
         {
-            var result = await _dataBaseService.ToDoTask.ReadAllAsync();
+            var result = await _dataBaseService.ReadAllAsync();
             Application.Current.Dispatcher.Invoke(() =>
             {
                 ToDoCollection.UpdateFromList(result);

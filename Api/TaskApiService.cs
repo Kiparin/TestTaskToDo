@@ -6,7 +6,7 @@ using SharedModel.DTO;
 
 namespace Api
 {
-    public class TaskApiService
+    public class TaskApiService : ITaskApiService 
     {
         private readonly IUsersToDoApi _userApi;
 
